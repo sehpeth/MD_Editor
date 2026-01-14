@@ -1,0 +1,3043 @@
+<!DOCTYPE html>
+<!-- saved from url=(0232)file:///Users/sehome/Library/Application%20Support/Claude/local-agent-mode-sessions/9cbd4f14-bdfd-4492-8f59-8b739ff40151/c34a2d74-6d4b-4cea-b66a-011b94334d48/local_a6e5f09f-06ba-4b3c-af16-fda864f44b8b/outputs/markdown-editor-v6.html -->
+<html lang="en" style="--editor-width: 50%;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Editor</title>
+    <script src="./index_files/marked.min.js"></script>
+    <script src="./index_files/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --accent-color: #4a90d9;
+            --accent-hover: #357abd;
+            --code-bg: #f4f4f4;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .document-name {
+            font-size: 14px;
+            color: var(--text-primary);
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            min-width: 200px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .document-name:focus {
+            border-color: var(--accent-color);
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Small buttons */
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .btn-sm svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Copy button */
+        .btn-copy {
+            position: relative;
+        }
+
+        .btn-copy.copied {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: white;
+        }
+
+        .btn-copy.copied .copy-icon {
+            display: none;
+        }
+
+        .btn-copy.copied .check-icon {
+            display: block !important;
+        }
+
+        /* Clear button */
+        .btn-clear:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-trigger {
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+            background: var(--accent-color);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dropdown-trigger:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .dropdown-trigger svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .dropdown-trigger .dropdown-arrow {
+            width: 12px;
+            height: 12px;
+            margin-left: 2px;
+            transition: transform 0.2s;
+        }
+
+        .dropdown.open .dropdown-trigger .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 4px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 140px;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown.open .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background 0.15s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .dropdown-item svg {
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 0;
+        }
+
+        /* Mode Slider */
+        .mode-slider {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            padding: 3px;
+            gap: 2px;
+        }
+
+        .mode-btn {
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            border-radius: 4px;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mode-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .mode-btn.active {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .mode-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Sync Scroll Toggle */
+        .sync-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .sync-toggle:hover {
+            background: var(--bg-secondary);
+        }
+
+        .sync-toggle input {
+            display: none;
+        }
+
+        .sync-indicator {
+            width: 32px;
+            height: 18px;
+            background: var(--bg-tertiary);
+            border-radius: 9px;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .sync-indicator::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .sync-toggle input:checked + .sync-indicator {
+            background: var(--accent-color);
+        }
+
+        .sync-toggle input:checked + .sync-indicator::after {
+            transform: translateX(14px);
+        }
+
+        /* Settings Panel */
+        .settings-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 20px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .setting-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .setting-btn {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+
+        .setting-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .setting-value {
+            font-size: 12px;
+            color: var(--text-primary);
+            min-width: 40px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        select.setting-select {
+            padding: 6px 10px;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            padding: 8px 20px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border-color);
+            margin: 0 8px;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 145px);
+            background: var(--bg-secondary);
+        }
+
+        /* Editor Panel */
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            min-width: 0;
+            transition: width 0.3s ease, flex 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            flex-shrink: 0;
+        }
+
+        .panel-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-stats {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #editor {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            border: none;
+            outline: none;
+            resize: none;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 6px;
+            background: var(--bg-tertiary);
+            cursor: col-resize;
+            transition: background 0.2s;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .resizer:hover,
+        .resizer.dragging {
+            background: var(--accent-color);
+        }
+
+        .resizer::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 30px;
+            background: var(--text-secondary);
+            border-radius: 1px;
+            opacity: 0.3;
+        }
+
+        .resizer:hover::after,
+        .resizer.dragging::after {
+            background: white;
+            opacity: 0.8;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            min-width: 0;
+            transition: flex 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .preview-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px 32px;
+        }
+
+        /* Preview Content Styling */
+        .preview-content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .preview-content h1 {
+            font-size: 2em;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .preview-content h2 {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin: 32px 0 12px 0;
+            color: var(--text-primary);
+        }
+
+        .preview-content h3 {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin: 24px 0 8px 0;
+            color: var(--text-primary);
+        }
+
+        .preview-content h4, .preview-content h5, .preview-content h6 {
+            font-weight: 600;
+            margin: 20px 0 8px 0;
+            color: var(--text-primary);
+        }
+
+        .preview-content p {
+            margin: 0 0 16px 0;
+        }
+
+        .preview-content ul, .preview-content ol {
+            margin: 0 0 16px 0;
+            padding-left: 24px;
+        }
+
+        .preview-content li {
+            margin: 4px 0;
+        }
+
+        .preview-content code {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+            font-size: 0.9em;
+            padding: 2px 6px;
+            background: var(--code-bg);
+            border-radius: 3px;
+            color: #c7254e;
+        }
+
+        .preview-content pre {
+            margin: 0 0 16px 0;
+            padding: 16px;
+            background: #2d2d2d;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        .preview-content pre code {
+            padding: 0;
+            background: none;
+            color: #f8f8f2;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .preview-content blockquote {
+            margin: 0 0 16px 0;
+            padding: 12px 20px;
+            border-left: 4px solid var(--accent-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .preview-content blockquote p:last-child {
+            margin-bottom: 0;
+        }
+
+        .preview-content table {
+            width: 100%;
+            margin: 0 0 16px 0;
+            border-collapse: collapse;
+        }
+
+        .preview-content th, .preview-content td {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .preview-content th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+        }
+
+        .preview-content hr {
+            margin: 24px 0;
+            border: none;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .preview-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .preview-content a:hover {
+            text-decoration: underline;
+        }
+
+        .preview-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        /* Mode States */
+        body.mode-edit .preview-panel,
+        body.mode-edit .resizer {
+            display: none;
+        }
+
+        body.mode-edit .editor-panel {
+            flex: 1;
+            border-right: none;
+        }
+
+        body.mode-read .editor-panel,
+        body.mode-read .resizer {
+            display: none;
+        }
+
+        body.mode-read .preview-panel {
+            flex: 1;
+        }
+
+        body.mode-split .editor-panel {
+            width: var(--editor-width, 50%);
+        }
+
+        /* Mobile Settings Panel */
+        .mobile-settings-btn {
+            display: none;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .mobile-settings-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .settings-panel-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1500;
+        }
+
+        .settings-panel-overlay.visible {
+            display: block;
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100%;
+            background: var(--bg-primary);
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            z-index: 1600;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .settings-panel.visible {
+            right: 0;
+        }
+
+        .settings-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-panel-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .settings-panel-close {
+            padding: 8px;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .settings-panel-close:hover {
+            background: var(--bg-secondary);
+        }
+
+        .settings-panel-close svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .settings-panel-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-panel-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .settings-panel-group select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .settings-panel-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            padding: 4px;
+        }
+
+        .settings-panel-control button {
+            width: 40px;
+            height: 36px;
+            border: none;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 18px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .settings-panel-control button:active {
+            background: var(--bg-tertiary);
+        }
+
+        .settings-panel-control span {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .settings-row {
+                display: none;
+            }
+
+            .header-center .sync-toggle {
+                display: none;
+            }
+
+            .toolbar {
+                display: none;
+            }
+
+            #newDropdown {
+                display: none;
+            }
+
+            .logo {
+                display: none;
+            }
+
+            .mobile-settings-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .header {
+                padding: 10px 12px;
+                width: 100%;
+            }
+
+            .header-left {
+                gap: 8px;
+                flex-shrink: 1;
+                min-width: 0;
+            }
+
+            .document-name {
+                min-width: 80px;
+                max-width: 120px;
+                font-size: 14px;
+            }
+
+            .mode-slider {
+                gap: 0;
+                flex-shrink: 0;
+            }
+
+            .mode-btn {
+                padding: 8px 10px;
+            }
+
+            .mode-btn span {
+                display: none;
+            }
+
+            .mode-btn[data-mode="split"] {
+                display: none;
+            }
+
+            .header-right {
+                gap: 6px;
+                flex-shrink: 0;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .dropdown-trigger {
+                padding: 6px 10px;
+            }
+
+            .main-container {
+                height: calc(100vh - 60px);
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            .preview-panel {
+                width: 100% !important;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            .preview-wrapper {
+                padding: 16px 20px;
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            .preview-content {
+                max-width: 100%;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+            }
+
+            .preview-content h1 {
+                font-size: 1.5em;
+                word-wrap: break-word;
+            }
+
+            .preview-content h2 {
+                font-size: 1.3em;
+            }
+
+            .preview-content pre {
+                overflow-x: auto;
+                max-width: 100%;
+            }
+
+            .preview-content table {
+                display: block;
+                overflow-x: auto;
+                max-width: 100%;
+            }
+
+            .panel-header {
+                padding: 8px 16px;
+                width: 100%;
+            }
+
+            .panel-header .panel-title {
+                font-size: 10px;
+            }
+
+            #editor {
+                padding: 16px;
+                font-size: 16px;
+                width: 100%;
+            }
+
+            .editor-panel {
+                width: 100% !important;
+            }
+
+            /* Hide resizer on mobile regardless of mode */
+            .resizer {
+                display: none;
+            }
+
+            /* PDF Dialog mobile styles */
+            .pdf-dialog {
+                padding: 20px;
+                max-height: 85vh;
+            }
+
+            .pdf-dialog h3 {
+                font-size: 16px;
+                margin-bottom: 16px;
+            }
+
+            .template-dropdown-section {
+                display: block;
+            }
+
+            .template-cards-section {
+                display: none;
+            }
+
+            .custom-builder {
+                display: none !important;
+            }
+
+            .template-dropdown-section .custom-option {
+                display: none;
+            }
+
+            .pdf-option {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+            .pdf-option select,
+            .pdf-option input {
+                min-width: 100%;
+            }
+
+            .pdf-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .pdf-actions .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .header, .settings-row, .toolbar, .editor-panel, .resizer {
+                display: none !important;
+            }
+
+            .main-container {
+                height: auto;
+            }
+
+            .preview-panel {
+                width: 100% !important;
+            }
+
+            .preview-wrapper {
+                padding: 0;
+            }
+        }
+
+        /* PDF Export Overlay */
+        .pdf-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .pdf-overlay.visible {
+            display: flex;
+        }
+
+        .pdf-dialog {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .pdf-dialog h3 {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            color: #212529;
+        }
+
+        .pdf-section {
+            margin-bottom: 20px;
+        }
+
+        .pdf-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        /* Filename input in save dialogs */
+        .save-filename-input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: #f8f9fa;
+            color: #212529;
+        }
+
+        .save-filename-input:focus {
+            outline: none;
+            border-color: #4a90d9;
+            background: white;
+        }
+
+        /* Template dropdown - hidden on desktop by default */
+        .template-dropdown-section {
+            display: none;
+        }
+
+        /* Template Cards */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .template-card {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .template-card:hover {
+            border-color: #adb5bd;
+        }
+
+        .template-card.selected {
+            border-color: #4a90d9;
+            background: #f0f7ff;
+        }
+
+        .template-card-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 4px;
+        }
+
+        .template-card-desc {
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        /* Custom Template Builder */
+        .custom-builder {
+            display: none;
+            padding-top: 16px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .custom-builder.visible {
+            display: block;
+        }
+
+        .pdf-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .pdf-option:last-child {
+            border-bottom: none;
+        }
+
+        .pdf-option label {
+            font-size: 13px;
+            color: #212529;
+        }
+
+        .pdf-option select,
+        .pdf-option input[type="number"] {
+            padding: 6px 10px;
+            font-size: 13px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            color: #212529;
+            min-width: 140px;
+        }
+
+        .pdf-option input[type="number"] {
+            width: 80px;
+            min-width: auto;
+        }
+
+        .pdf-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+
+        .pdf-actions .btn {
+            padding: 10px 20px;
+        }
+
+        /* PDF Generation Status */
+        .pdf-status {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            color: #212529;
+            font-size: 14px;
+        }
+
+        .pdf-status.visible {
+            display: flex;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e9ecef;
+            border-top-color: #4a90d9;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toggle for custom */
+        .customize-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #4a90d9;
+            cursor: pointer;
+            padding: 8px 0;
+            margin-top: 8px;
+        }
+
+        .customize-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .customize-toggle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s;
+        }
+
+        .customize-toggle.expanded svg {
+            transform: rotate(180deg);
+        }
+
+        /* Template Actions */
+        .template-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .template-actions .btn {
+            padding: 4px 10px;
+            font-size: 11px;
+        }
+
+        /* Saved Templates Modal */
+        .templates-modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.98);
+            z-index: 10;
+            flex-direction: column;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .templates-modal.visible {
+            display: flex;
+        }
+
+        .templates-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .templates-modal-header h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #212529;
+        }
+
+        .templates-list {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+        }
+
+        .saved-template-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .saved-template-item:last-child {
+            border-bottom: none;
+        }
+
+        .saved-template-item:hover {
+            background: #f8f9fa;
+        }
+
+        .saved-template-info {
+            flex: 1;
+        }
+
+        .saved-template-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #212529;
+        }
+
+        .saved-template-preview {
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        .saved-template-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .saved-template-actions button {
+            padding: 4px 8px;
+            font-size: 11px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .saved-template-actions button:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .saved-template-actions .delete-btn:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .no-templates {
+            padding: 40px 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        /* Save template dialog */
+        .save-name-input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .save-name-input:focus {
+            outline: none;
+            border-color: #4a90d9;
+        }
+    </style>
+</head>
+<body class="mode-split">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <span class="logo">Markdown Editor</span>
+            <input type="text" class="document-name" id="docName" value="untitled" placeholder="Document name" oninput="updateTabTitle(); saveToLocalStorage();">
+        </div>
+        <div class="header-center">
+            <!-- Mode Slider -->
+            <div class="mode-slider">
+                <button class="mode-btn" data-mode="edit" onclick="setMode(&#39;edit&#39;)" title="Editor only">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                    <span>Edit</span>
+                </button>
+                <button class="mode-btn active" data-mode="split" onclick="setMode(&#39;split&#39;)" title="Editor + Preview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                        <line x1="12" y1="3" x2="12" y2="21"></line>
+                    </svg>
+                    <span>Split</span>
+                </button>
+                <button class="mode-btn" data-mode="read" onclick="setMode(&#39;read&#39;)" title="Preview only">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span>Read</span>
+                </button>
+            </div>
+
+            <!-- Sync Scroll Toggle -->
+            <label class="sync-toggle" title="Sync scroll position between editor and preview">
+                <input type="checkbox" id="syncScroll" checked="" onchange="toggleSyncScroll()">
+                <span class="sync-indicator"></span>
+                <span>Sync</span>
+            </label>
+        </div>
+        <div class="header-right">
+            <div class="dropdown" id="newDropdown">
+                <button class="btn btn-sm" onclick="toggleDropdown(&#39;newDropdown&#39;)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="dropdown-content">
+                    <button class="dropdown-item" onclick="newDocument(); closeDropdowns();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        Blank Document
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" onclick="newFromTemplate(&#39;meeting&#39;); closeDropdowns();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Meeting Notes
+                    </button>
+                    <button class="dropdown-item" onclick="newFromTemplate(&#39;decision&#39;); closeDropdowns();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        Decision Doc
+                    </button>
+                    <button class="dropdown-item" onclick="newFromTemplate(&#39;session&#39;); closeDropdowns();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Session Log
+                    </button>
+                </div>
+            </div>
+            <button class="btn btn-sm" onclick="openFile()" title="Open file">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </button>
+            <div class="dropdown" id="saveDropdown">
+                <button class="dropdown-trigger" onclick="toggleDropdown(&#39;saveDropdown&#39;)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="dropdown-content">
+                    <button class="dropdown-item" onclick="showMdDialog(); closeDropdowns();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        Markdown
+                    </button>
+                    <button class="dropdown-item" onclick="showPdfDialog(); closeDropdowns();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <path d="M9 15h6"></path>
+                            <path d="M9 11h6"></path>
+                        </svg>
+                        PDF
+                    </button>
+                </div>
+            </div>
+            <button class="btn btn-copy btn-sm" onclick="copyToClipboard()" title="Copy to clipboard">
+                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                            </button>
+            <button class="btn btn-clear btn-sm" onclick="clearDocument()" title="Clear document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                            </button>
+            <button class="mobile-settings-btn" onclick="openSettingsPanel()" title="Settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Settings Panel -->
+    <div class="settings-panel-overlay" id="settingsPanelOverlay" onclick="closeSettingsPanel()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-panel-header">
+            <h3>Settings</h3>
+            <button class="settings-panel-close" onclick="closeSettingsPanel()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <div class="settings-panel-group">
+            <label class="settings-panel-label">Theme</label>
+            <select id="mobileThemeSelect" onchange="changeTheme(this.value)">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="sepia">Sepia</option>
+                <option value="synthwave">Synthwave</option>
+                <option value="hal">HAL 9000</option>
+                <option value="moss">Moss</option>
+            </select>
+        </div>
+
+        <div class="settings-panel-group">
+            <label class="settings-panel-label">Font Size</label>
+            <div class="settings-panel-control">
+                <button onclick="adjustFontSize(-1)">−</button>
+                <span id="mobileFontSizeDisplay">16px</span>
+                <button onclick="adjustFontSize(1)">+</button>
+            </div>
+        </div>
+
+        <div class="settings-panel-group">
+            <label class="settings-panel-label">Line Height</label>
+            <div class="settings-panel-control">
+                <button onclick="adjustLineHeight(-0.1)">−</button>
+                <span id="mobileLineHeightDisplay">1.7</span>
+                <button onclick="adjustLineHeight(0.1)">+</button>
+            </div>
+        </div>
+
+        <div class="settings-panel-group">
+            <label class="settings-panel-label">Content Width</label>
+            <div class="settings-panel-control">
+                <button onclick="adjustMaxWidth(-50)">−</button>
+                <span id="mobileMaxWidthDisplay">800px</span>
+                <button onclick="adjustMaxWidth(50)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Row -->
+    <div class="settings-row">
+        <div class="setting-group">
+            <span class="setting-label">Theme</span>
+            <select class="setting-select" id="themeSelect" onchange="changeTheme()">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="sepia">Sepia</option>
+                <option value="synthwave">Synthwave</option>
+                <option value="hal">HAL 9000</option>
+                <option value="moss">Moss</option>
+            </select>
+        </div>
+        <div class="setting-group">
+            <span class="setting-label">Size</span>
+            <div class="setting-control">
+                <button class="setting-btn" onclick="adjustFontSize(-1)">−</button>
+                <span class="setting-value" id="fontSizeDisplay">16px</span>
+                <button class="setting-btn" onclick="adjustFontSize(1)">+</button>
+            </div>
+        </div>
+        <div class="setting-group">
+            <span class="setting-label">Height</span>
+            <div class="setting-control">
+                <button class="setting-btn" onclick="adjustLineHeight(-0.1)">−</button>
+                <span class="setting-value" id="lineHeightDisplay">1.7</span>
+                <button class="setting-btn" onclick="adjustLineHeight(0.1)">+</button>
+            </div>
+        </div>
+        <div class="setting-group">
+            <span class="setting-label">Width</span>
+            <div class="setting-control">
+                <button class="setting-btn" onclick="adjustMaxWidth(-50)">−</button>
+                <span class="setting-value" id="maxWidthDisplay">800px</span>
+                <button class="setting-btn" onclick="adjustMaxWidth(50)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <button class="toolbar-btn" onclick="insertFormat(&#39;**&#39;, &#39;**&#39;)" title="Bold (Ctrl+B)">B</button>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;*&#39;, &#39;*&#39;)" title="Italic (Ctrl+I)"><i>I</i></button>
+        <div class="toolbar-divider"></div>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;# &#39;, &#39;&#39;)" title="Heading 1">H1</button>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;## &#39;, &#39;&#39;)" title="Heading 2">H2</button>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;### &#39;, &#39;&#39;)" title="Heading 3">H3</button>
+        <div class="toolbar-divider"></div>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;[&#39;, &#39;](url)&#39;)" title="Link">🔗 Link</button>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;\`&#39;, &#39;\`&#39;)" title="Inline Code">Code</button>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;\n```\n&#39;, &#39;\n```\n&#39;)" title="Code Block">Code Block</button>
+        <div class="toolbar-divider"></div>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;- &#39;, &#39;&#39;)" title="Bullet List">• List</button>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;1. &#39;, &#39;&#39;)" title="Numbered List">1. List</button>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;&gt; &#39;, &#39;&#39;)" title="Quote">" Quote</button>
+        <div class="toolbar-divider"></div>
+        <button class="toolbar-btn" onclick="insertFormat(&#39;\n---\n&#39;, &#39;&#39;)" title="Divider">― Divider</button>
+        <button class="toolbar-btn" onclick="insertTable()" title="Table">Table</button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="editor-panel" id="editorPanel" style="width: 50%;">
+            <div class="panel-header">
+                <span class="panel-title">Editor</span>
+                <span class="panel-stats" id="editorStats">195 words · 1,200 chars</span>
+            </div>
+            <div class="editor-wrapper">
+                <textarea id="editor" placeholder="Start writing markdown..."></textarea>
+            </div>
+        </div>
+
+        <div class="resizer" id="resizer"></div>
+
+        <div class="preview-panel" id="previewPanel">
+            <div class="panel-header">
+                <span class="panel-title">Preview</span>
+                <span class="panel-stats" id="readTime">1 min read</span>
+            </div>
+            <div class="preview-wrapper" id="previewWrapper">
+                <div class="preview-content" id="preview"><h1>Welcome to Markdown Editor</h1>
+<p>A clean, minimal markdown editor for reviewing documentation.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>Split View</strong>: Editor and preview side by side</li>
+<li><strong>Mode Slider</strong>: Switch between Edit, Split, and Read modes</li>
+<li><strong>Sync Scroll</strong>: Editor and preview scroll together</li>
+<li><strong>Drag Resizer</strong>: Adjust panel sizes to your preference</li>
+<li><strong>PDF Export</strong>: Multiple templates + custom builder</li>
+<li><strong>Keyboard Shortcuts</strong>: Fast formatting while you write</li>
+</ul>
+<h2>PDF Templates</h2>
+<table>
+<thead>
+<tr>
+<th>Template</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Clean</td>
+<td>General purpose, everyday docs</td>
+</tr>
+<tr>
+<td>Large Print</td>
+<td>Easy reading, presentations</td>
+</tr>
+<tr>
+<td>Formal</td>
+<td>Reports, proposals, official docs</td>
+</tr>
+<tr>
+<td>Compact</td>
+<td>Dense information, reference docs</td>
+</tr>
+<tr>
+<td>Technical</td>
+<td>Code-heavy documentation</td>
+</tr>
+<tr>
+<td>Custom</td>
+<td>Build exactly what you need</td>
+</tr>
+</tbody></table>
+<h2>Code Example</h2>
+<pre><code class="language-javascript">function greet(name) {
+    return `Hello, ${name}!`;
+}
+
+// This is a longer line of code that demonstrates how code blocks handle wrapping in PDF exports to prevent text from being cut off
+const longVariable = "This string is intentionally long to test the word wrap feature";
+</code></pre>
+<blockquote>
+<p>"The best interface is no interface." — Golden Krishna</p>
+</blockquote>
+<hr>
+<p>Start writing or open a markdown file to begin.</p>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" accept=".md,.txt,.markdown" style="display: none" onchange="handleFileOpen(event)">
+
+    <!-- Markdown Save Dialog -->
+    <div class="pdf-overlay" id="mdOverlay" onclick="closeMdDialog(event)">
+        <div class="pdf-dialog" onclick="event.stopPropagation()">
+            <h3>Save Markdown</h3>
+            <div class="pdf-section">
+                <div class="pdf-option">
+                    <label>File Name</label>
+                    <input type="text" id="mdFilename" class="save-filename-input" placeholder="document">
+                </div>
+            </div>
+            <div class="pdf-actions">
+                <button class="btn" onclick="closeMdDialog()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveMarkdownFile()">Save .md</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Export Dialog -->
+    <div class="pdf-overlay" id="pdfOverlay" onclick="closePdfDialog(event)">
+        <div class="pdf-dialog" onclick="event.stopPropagation()" style="position: relative;">
+            <!-- Saved Templates Modal (overlays the dialog) -->
+            <div class="templates-modal" id="templatesModal">
+                <div class="templates-modal-header">
+                    <h4>Saved Templates</h4>
+                    <button class="btn" onclick="hideLoadTemplates()">Back</button>
+                </div>
+                <div class="templates-list" id="templatesList">
+                    <div class="no-templates">No saved templates yet</div>
+                </div>
+            </div>
+
+            <h3>Export to PDF</h3>
+
+            <!-- Filename -->
+            <div class="pdf-section">
+                <div class="pdf-option">
+                    <label>File Name</label>
+                    <input type="text" id="pdfFilename" class="save-filename-input" placeholder="document">
+                </div>
+            </div>
+
+            <!-- Template Dropdown (shown on mobile) -->
+            <div class="pdf-section template-dropdown-section">
+                <div class="pdf-option">
+                    <label>Template</label>
+                    <select id="pdfTemplateDropdown" onchange="selectTemplateFromDropdown(this.value)">
+                        <option value="clean">Clean</option>
+                        <option value="large">Large Print</option>
+                        <option value="formal">Formal</option>
+                        <option value="compact">Compact</option>
+                        <option value="technical">Technical</option>
+                        <option value="custom" class="custom-option">Custom...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Scale Option -->
+            <div class="pdf-section">
+                <div class="pdf-option">
+                    <label>Scale</label>
+                    <select id="pdfScale">
+                        <option value="0.8">80%</option>
+                        <option value="0.9">90%</option>
+                        <option value="1" selected="">100%</option>
+                        <option value="1.1">110%</option>
+                        <option value="1.2">120%</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Template Selection Cards (hidden on mobile) -->
+            <div class="pdf-section template-cards-section">
+                <div class="pdf-section-title">Choose Template</div>
+                <div class="template-grid">
+                    <div class="template-card selected" data-template="clean" onclick="selectTemplate(&#39;clean&#39;)">
+                        <div class="template-card-name">Clean</div>
+                        <div class="template-card-desc">Sans-serif, balanced spacing</div>
+                    </div>
+                    <div class="template-card" data-template="large" onclick="selectTemplate(&#39;large&#39;)">
+                        <div class="template-card-name">Large Print</div>
+                        <div class="template-card-desc">Bigger text, more readable</div>
+                    </div>
+                    <div class="template-card" data-template="formal" onclick="selectTemplate(&#39;formal&#39;)">
+                        <div class="template-card-name">Formal</div>
+                        <div class="template-card-desc">Serif fonts, traditional look</div>
+                    </div>
+                    <div class="template-card" data-template="compact" onclick="selectTemplate(&#39;compact&#39;)">
+                        <div class="template-card-name">Compact</div>
+                        <div class="template-card-desc">Tighter spacing, more content</div>
+                    </div>
+                    <div class="template-card" data-template="technical" onclick="selectTemplate(&#39;technical&#39;)">
+                        <div class="template-card-name">Technical</div>
+                        <div class="template-card-desc">Optimized for code-heavy docs</div>
+                    </div>
+                    <div class="template-card" data-template="custom" onclick="selectTemplate(&#39;custom&#39;)">
+                        <div class="template-card-name">Custom</div>
+                        <div class="template-card-desc">Build your own</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Builder (hidden by default, shown when Custom is selected) -->
+            <div class="custom-builder" id="customBuilder">
+                <div class="pdf-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Customize Template</span>
+                    <div class="template-actions">
+                        <button class="btn" onclick="saveCustomTemplate()" title="Save current settings">Save</button>
+                        <button class="btn" onclick="showLoadTemplates()" title="Load saved template">Load</button>
+                    </div>
+                </div>
+
+                <div class="pdf-option">
+                    <label>Page Size</label>
+                    <select id="pdfPageSize">
+                        <option value="letter">Letter (8.5" × 11")</option>
+                        <option value="a4">A4 (210mm × 297mm)</option>
+                        <option value="legal">Legal (8.5" × 14")</option>
+                    </select>
+                </div>
+
+                <div class="pdf-option">
+                    <label>Font Family</label>
+                    <select id="pdfFontFamily">
+                        <option value="sans">Sans-serif (Helvetica)</option>
+                        <option value="serif">Serif (Georgia)</option>
+                        <option value="mono">Monospace (Courier)</option>
+                    </select>
+                </div>
+
+                <div class="pdf-option">
+                    <label>Base Font Size</label>
+                    <select id="pdfFontSize">
+                        <option value="10">10pt</option>
+                        <option value="11">11pt</option>
+                        <option value="12" selected="">12pt</option>
+                        <option value="14">14pt</option>
+                        <option value="16">16pt</option>
+                    </select>
+                </div>
+
+                <div class="pdf-option">
+                    <label>Line Height</label>
+                    <select id="pdfLineHeight">
+                        <option value="1.3">Tight (1.3)</option>
+                        <option value="1.5">Normal (1.5)</option>
+                        <option value="1.7" selected="">Relaxed (1.7)</option>
+                        <option value="2.0">Spacious (2.0)</option>
+                    </select>
+                </div>
+
+                <div class="pdf-option">
+                    <label>Margins</label>
+                    <select id="pdfMargins">
+                        <option value="0.5">Narrow (0.5")</option>
+                        <option value="0.75">Medium (0.75")</option>
+                        <option value="1" selected="">Normal (1")</option>
+                        <option value="1.25">Wide (1.25")</option>
+                    </select>
+                </div>
+
+                <div class="pdf-option">
+                    <label>Paragraph Spacing</label>
+                    <select id="pdfParaSpacing">
+                        <option value="0.5">Tight (0.5em)</option>
+                        <option value="1" selected="">Normal (1em)</option>
+                        <option value="1.5">Relaxed (1.5em)</option>
+                    </select>
+                </div>
+
+                <div class="pdf-option">
+                    <label>Code Block Style</label>
+                    <select id="pdfCodeStyle">
+                        <option value="light" selected="">Light background</option>
+                        <option value="dark">Dark background</option>
+                        <option value="border">Border only</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pdf-status" id="pdfStatus">
+                <div class="spinner"></div>
+                <span>Generating PDF...</span>
+            </div>
+
+            <div class="pdf-actions" id="pdfActions">
+                <button class="btn" onclick="closePdfDialog()">Cancel</button>
+                <button class="btn btn-primary" onclick="exportToPdf()">Export PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentMode = 'split';
+        let syncScrollEnabled = true;
+        let fontSize = 16;
+        let lineHeight = 1.7;
+        let maxWidth = 800;
+        let editorWidth = 50;
+        let isDragging = false;
+        let isScrolling = false;
+        let scrollTimeout = null;
+        let selectedTemplate = 'clean';
+
+        // Document Templates
+        const documentTemplates = {
+            meeting: {
+                name: 'Meeting Notes',
+                content: `# Meeting Notes: [Topic]
+**Date:** ${new Date().toISOString().split('T')[0]}
+**Attendees:**
+**Location/Call:**
+
+---
+
+## Agenda
+1.
+2.
+3.
+
+---
+
+## Discussion Notes
+
+
+---
+
+## Action Items
+- [ ] **[Owner]**: Task description — *Due: Date*
+- [ ] **[Owner]**: Task description — *Due: Date*
+
+## Decisions Made
+-
+
+## Next Steps
+-
+
+---
+
+## Follow-up Meeting
+**Date:** TBD
+**Topics to revisit:**
+-
+`
+            },
+            decision: {
+                name: 'Decision Doc',
+                content: `# Decision: [Title]
+**Status:** Draft | Under Review | Final
+**Date:** ${new Date().toISOString().split('T')[0]}
+**Decision Maker:**
+**Stakeholders:**
+
+---
+
+## Context
+What situation or problem prompted this decision?
+
+## Decision
+What was decided? State it clearly and concisely.
+
+## Options Considered
+
+### Option A: [Name]
+**Pros:**
+-
+
+**Cons:**
+-
+
+### Option B: [Name]
+**Pros:**
+-
+
+**Cons:**
+-
+
+## Rationale
+Why was this option chosen over the alternatives?
+
+## Implications
+What changes, actions, or consequences follow from this decision?
+
+-
+
+## Review Date
+When should this decision be revisited?
+
+---
+
+*Document history: Created ${new Date().toISOString().split('T')[0]}*
+`
+            },
+            session: {
+                name: 'Session Log',
+                content: `# Session Log: [Topic/Project]
+**Date:** ${new Date().toISOString().split('T')[0]}
+**Participants:**
+
+---
+
+## Starting Context
+What we knew going in, current state, why this session is happening.
+
+## Goals
+- [ ]
+- [ ]
+- [ ]
+
+---
+
+## Work Log
+Chronological record of what we did, decisions made, pivots taken.
+
+### [Time or Phase]
+
+
+---
+
+## Decisions Made
+| Decision | Rationale | Status |
+|----------|-----------|--------|
+|  |  | ✓ Final / ⏸ Tentative |
+
+## Open Questions
+- [ ]
+- [ ]
+
+## Follow-up Items
+- [ ] **[Owner]**: Task description
+- [ ] **[Owner]**: Task description
+
+---
+
+## Deliverables
+| Item | Location | Status |
+|------|----------|--------|
+|  |  | Draft / Final |
+
+## Data & Artifacts
+Files created, modified, or referenced during this session.
+
+-
+
+---
+
+## Notes for Next Session
+What future-you (or future collaborators) needs to know.
+
+`
+            }
+        };
+
+        // PDF Template Definitions
+        const pdfTemplates = {
+            clean: {
+                fontFamily: 'sans',
+                fontSize: '12',
+                lineHeight: '1.5',
+                margins: '1',
+                paraSpacing: '1',
+                codeStyle: 'light',
+                pageSize: 'letter'
+            },
+            large: {
+                fontFamily: 'sans',
+                fontSize: '16',
+                lineHeight: '1.7',
+                margins: '1',
+                paraSpacing: '1.5',
+                codeStyle: 'light',
+                pageSize: 'letter'
+            },
+            formal: {
+                fontFamily: 'serif',
+                fontSize: '12',
+                lineHeight: '1.7',
+                margins: '1.25',
+                paraSpacing: '1',
+                codeStyle: 'border',
+                pageSize: 'letter'
+            },
+            compact: {
+                fontFamily: 'sans',
+                fontSize: '10',
+                lineHeight: '1.3',
+                margins: '0.5',
+                paraSpacing: '0.5',
+                codeStyle: 'light',
+                pageSize: 'letter'
+            },
+            technical: {
+                fontFamily: 'sans',
+                fontSize: '11',
+                lineHeight: '1.5',
+                margins: '0.75',
+                paraSpacing: '1',
+                codeStyle: 'dark',
+                pageSize: 'letter'
+            },
+            custom: null // Uses form values
+        };
+
+        // Elements
+        const editor = document.getElementById('editor');
+        const preview = document.getElementById('preview');
+        const previewWrapper = document.getElementById('previewWrapper');
+        const editorPanel = document.getElementById('editorPanel');
+        const previewPanel = document.getElementById('previewPanel');
+        const resizer = document.getElementById('resizer');
+        const editorStats = document.getElementById('editorStats');
+        const readTime = document.getElementById('readTime');
+
+        // Initialize marked
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
+
+        // Sample content
+        const sampleContent = `# Welcome to Markdown Editor
+
+A clean, minimal markdown editor for reviewing documentation.
+
+## Features
+
+- **Split View**: Editor and preview side by side
+- **Mode Slider**: Switch between Edit, Split, and Read modes
+- **Sync Scroll**: Editor and preview scroll together
+- **Drag Resizer**: Adjust panel sizes to your preference
+- **PDF Export**: Multiple templates + custom builder
+- **Keyboard Shortcuts**: Fast formatting while you write
+
+## PDF Templates
+
+| Template | Best For |
+|----------|----------|
+| Clean | General purpose, everyday docs |
+| Large Print | Easy reading, presentations |
+| Formal | Reports, proposals, official docs |
+| Compact | Dense information, reference docs |
+| Technical | Code-heavy documentation |
+| Custom | Build exactly what you need |
+
+## Code Example
+
+\`\`\`javascript
+function greet(name) {
+    return \`Hello, \${name}!\`;
+}
+
+// This is a longer line of code that demonstrates how code blocks handle wrapping in PDF exports to prevent text from being cut off
+const longVariable = "This string is intentionally long to test the word wrap feature";
+\`\`\`
+
+> "The best interface is no interface." — Golden Krishna
+
+---
+
+Start writing or open a markdown file to begin.
+`;
+
+        // Initialize
+        editor.value = sampleContent;
+        updatePreview();
+        updateStats();
+        document.documentElement.style.setProperty('--editor-width', `${editorWidth}%`);
+
+        // Event listeners
+        editor.addEventListener('input', () => {
+            updatePreview();
+            updateStats();
+            saveToLocalStorage();
+        });
+
+        // Sync Scroll - Editor scrolls Preview
+        editor.addEventListener('scroll', () => {
+            if (!syncScrollEnabled || isScrolling || currentMode !== 'split') return;
+
+            isScrolling = true;
+
+            const editorScrollMax = editor.scrollHeight - editor.clientHeight;
+            const previewScrollMax = previewWrapper.scrollHeight - previewWrapper.clientHeight;
+
+            if (editor.scrollTop <= 1) {
+                previewWrapper.scrollTop = 0;
+            } else if (editor.scrollTop >= editorScrollMax - 1) {
+                previewWrapper.scrollTop = previewScrollMax;
+            } else if (editorScrollMax > 0 && previewScrollMax > 0) {
+                const editorScrollPercent = editor.scrollTop / editorScrollMax;
+                previewWrapper.scrollTop = editorScrollPercent * previewScrollMax;
+            }
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+            }, 30);
+        });
+
+        // Sync Scroll - Preview scrolls Editor
+        previewWrapper.addEventListener('scroll', () => {
+            if (!syncScrollEnabled || isScrolling || currentMode !== 'split') return;
+
+            isScrolling = true;
+
+            const editorScrollMax = editor.scrollHeight - editor.clientHeight;
+            const previewScrollMax = previewWrapper.scrollHeight - previewWrapper.clientHeight;
+
+            if (previewWrapper.scrollTop <= 1) {
+                editor.scrollTop = 0;
+            } else if (previewWrapper.scrollTop >= previewScrollMax - 1) {
+                editor.scrollTop = editorScrollMax;
+            } else if (editorScrollMax > 0 && previewScrollMax > 0) {
+                const previewScrollPercent = previewWrapper.scrollTop / previewScrollMax;
+                editor.scrollTop = previewScrollPercent * editorScrollMax;
+            }
+
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+            }, 30);
+        });
+
+        // Resizer functionality
+        resizer.addEventListener('mousedown', (e) => {
+            if (currentMode !== 'split') return;
+            isDragging = true;
+            resizer.classList.add('dragging');
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging || currentMode !== 'split') return;
+
+            const containerRect = document.querySelector('.main-container').getBoundingClientRect();
+            const newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
+
+            if (newWidth >= 20 && newWidth <= 80) {
+                editorWidth = newWidth;
+                document.documentElement.style.setProperty('--editor-width', `${newWidth}%`);
+                editorPanel.style.width = `${newWidth}%`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                resizer.classList.remove('dragging');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === '1') {
+                e.preventDefault();
+                setMode('edit');
+            }
+            if (e.ctrlKey && e.key === '2') {
+                e.preventDefault();
+                setMode('split');
+            }
+            if (e.ctrlKey && e.key === '3') {
+                e.preventDefault();
+                setMode('read');
+            }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveFile();
+            }
+            if (document.activeElement === editor) {
+                if (e.ctrlKey && e.key === 'b') {
+                    e.preventDefault();
+                    insertFormat('**', '**');
+                }
+                if (e.ctrlKey && e.key === 'i') {
+                    e.preventDefault();
+                    insertFormat('*', '*');
+                }
+            }
+            if (e.key === 'Escape') {
+                closePdfDialog();
+            }
+        });
+
+        // Functions
+        function setMode(mode) {
+            currentMode = mode;
+            document.body.className = `mode-${mode}`;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+            if (mode === 'edit') {
+                setTimeout(() => editor.focus(), 100);
+            }
+            if (mode === 'split') {
+                editorPanel.style.width = `${editorWidth}%`;
+            }
+        }
+
+        function toggleSyncScroll() {
+            syncScrollEnabled = document.getElementById('syncScroll').checked;
+        }
+
+        function updatePreview() {
+            const markdown = editor.value;
+            preview.innerHTML = marked.parse(markdown);
+        }
+
+        function updateStats() {
+            const text = editor.value;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const chars = text.length;
+            const minutes = Math.ceil(words / 200);
+
+            editorStats.textContent = `${words.toLocaleString()} words · ${chars.toLocaleString()} chars`;
+            readTime.textContent = `${minutes} min read`;
+        }
+
+        function insertFormat(before, after) {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const text = editor.value;
+            const selectedText = text.substring(start, end);
+
+            editor.value = text.substring(0, start) + before + selectedText + after + text.substring(end);
+
+            if (selectedText) {
+                editor.selectionStart = start + before.length;
+                editor.selectionEnd = end + before.length;
+            } else {
+                editor.selectionStart = editor.selectionEnd = start + before.length;
+            }
+
+            editor.focus();
+            updatePreview();
+            updateStats();
+        }
+
+        function insertTable() {
+            const table = `\n| Header 1 | Header 2 | Header 3 |
+|----------|----------|----------|
+| Cell 1   | Cell 2   | Cell 3   |
+| Cell 4   | Cell 5   | Cell 6   |\n`;
+            insertFormat(table, '');
+        }
+
+        function newDocument() {
+            if (editor.value && !confirm('Create new document? Unsaved changes will be lost.')) {
+                return;
+            }
+            editor.value = '';
+            document.getElementById('docName').value = 'untitled';
+            updatePreview();
+            updateStats();
+            updateTabTitle();
+            localStorage.removeItem('markdown-editor-content');
+        }
+
+        function clearDocument() {
+            if (!editor.value) return;
+            if (!confirm('Clear all content? This cannot be undone.')) {
+                return;
+            }
+            editor.value = '';
+            updatePreview();
+            updateStats();
+            saveToLocalStorage();
+        }
+
+        function newFromTemplate(templateKey) {
+            if (editor.value && !confirm('Create new document from template? Unsaved changes will be lost.')) {
+                return;
+            }
+            const template = documentTemplates[templateKey];
+            if (!template) return;
+
+            editor.value = template.content;
+            document.getElementById('docName').value = template.name.toLowerCase().replace(/\s+/g, '-');
+            updatePreview();
+            updateStats();
+            updateTabTitle();
+            saveToLocalStorage();
+        }
+
+        function openFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileOpen(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                editor.value = e.target.result;
+                document.getElementById('docName').value = file.name.replace(/\.(md|txt|markdown)$/, '');
+                updatePreview();
+                updateStats();
+                updateTabTitle();
+                saveToLocalStorage();
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function saveFile() {
+            // Kept for keyboard shortcut - does direct save
+            const content = editor.value;
+            const filename = document.getElementById('docName').value || 'untitled';
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.md`;
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+
+        // Markdown Save Dialog
+        function showMdDialog() {
+            document.getElementById('mdFilename').value = document.getElementById('docName').value || 'untitled';
+            document.getElementById('mdOverlay').classList.add('visible');
+        }
+
+        function closeMdDialog(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('mdOverlay').classList.remove('visible');
+        }
+
+        function copyToClipboard() {
+            const content = editor.value;
+            const btn = document.querySelector('.btn-copy');
+            const textSpan = btn.querySelector('.copy-text');
+
+            navigator.clipboard.writeText(content).then(() => {
+                // Show success state
+                btn.classList.add('copied');
+                textSpan.textContent = 'Copied!';
+
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    textSpan.textContent = 'Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = content;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                btn.classList.add('copied');
+                textSpan.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    textSpan.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function saveMarkdownFile() {
+            const content = editor.value;
+            const filename = document.getElementById('mdFilename').value || 'untitled';
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.md`;
+            a.click();
+
+            URL.revokeObjectURL(url);
+
+            // Update docName to match
+            document.getElementById('docName').value = filename;
+            updateTabTitle();
+            saveToLocalStorage();
+
+            closeMdDialog();
+        }
+
+        // PDF Export Functions
+        function showPdfDialog() {
+            document.getElementById('pdfFilename').value = document.getElementById('docName').value || 'untitled';
+            document.getElementById('pdfOverlay').classList.add('visible');
+            document.getElementById('pdfStatus').classList.remove('visible');
+            document.getElementById('pdfActions').style.display = 'flex';
+            document.getElementById('pdfScale').value = '1';
+            document.getElementById('pdfTemplateDropdown').value = 'clean';
+            selectTemplate('clean');
+        }
+
+        function selectTemplateFromDropdown(templateName) {
+            selectTemplate(templateName);
+        }
+
+        function closePdfDialog(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('pdfOverlay').classList.remove('visible');
+        }
+
+        function selectTemplate(templateName) {
+            selectedTemplate = templateName;
+
+            // Update UI - cards
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.toggle('selected', card.dataset.template === templateName);
+            });
+
+            // Update UI - dropdown
+            document.getElementById('pdfTemplateDropdown').value = templateName;
+
+            // Show/hide custom builder
+            const customBuilder = document.getElementById('customBuilder');
+            if (templateName === 'custom') {
+                customBuilder.classList.add('visible');
+            } else {
+                customBuilder.classList.remove('visible');
+                // Apply template values to form (for reference)
+                if (pdfTemplates[templateName]) {
+                    const t = pdfTemplates[templateName];
+                    document.getElementById('pdfPageSize').value = t.pageSize;
+                    document.getElementById('pdfFontFamily').value = t.fontFamily;
+                    document.getElementById('pdfFontSize').value = t.fontSize;
+                    document.getElementById('pdfLineHeight').value = t.lineHeight;
+                    document.getElementById('pdfMargins').value = t.margins;
+                    document.getElementById('pdfParaSpacing').value = t.paraSpacing;
+                    document.getElementById('pdfCodeStyle').value = t.codeStyle;
+                }
+            }
+        }
+
+        function getTemplateSettings() {
+            if (selectedTemplate === 'custom' || !pdfTemplates[selectedTemplate]) {
+                return {
+                    fontFamily: document.getElementById('pdfFontFamily').value,
+                    fontSize: document.getElementById('pdfFontSize').value,
+                    lineHeight: document.getElementById('pdfLineHeight').value,
+                    margins: document.getElementById('pdfMargins').value,
+                    paraSpacing: document.getElementById('pdfParaSpacing').value,
+                    codeStyle: document.getElementById('pdfCodeStyle').value,
+                    pageSize: document.getElementById('pdfPageSize').value
+                };
+            }
+            return pdfTemplates[selectedTemplate];
+        }
+
+        function exportToPdf() {
+            const filename = document.getElementById('pdfFilename').value || document.getElementById('docName').value || 'untitled';
+            const settings = getTemplateSettings();
+            const scale = parseFloat(document.getElementById('pdfScale').value) || 1;
+
+            // Show loading state
+            document.getElementById('pdfStatus').classList.add('visible');
+            document.getElementById('pdfActions').style.display = 'none';
+
+            // Font family mapping
+            const fontFamilies = {
+                sans: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                serif: "Georgia, 'Times New Roman', serif",
+                mono: "'Courier New', Courier, monospace"
+            };
+            const fontFamily = fontFamilies[settings.fontFamily];
+
+            // Apply scale to font size
+            const scaledFontSize = parseFloat(settings.fontSize) * scale;
+
+            // Create a clean container for PDF
+            const pdfContainer = document.createElement('div');
+            pdfContainer.innerHTML = preview.innerHTML;
+
+            // Apply base styles with scale
+            pdfContainer.style.cssText = `
+                font-family: ${fontFamily};
+                font-size: ${scaledFontSize}pt;
+                line-height: ${settings.lineHeight};
+                color: #1a1a1a;
+                max-width: none;
+                padding: 0;
+            `;
+
+            // Style headings
+            const headingFont = settings.fontFamily === 'mono' ? fontFamily : fontFamilies.sans;
+            pdfContainer.querySelectorAll('h1').forEach(el => {
+                el.style.cssText = `font-family: ${headingFont}; font-size: 1.8em; font-weight: 700; margin: 0 0 ${settings.paraSpacing}em 0; padding-bottom: 0.3em; border-bottom: 2px solid #333; color: #111;`;
+            });
+            pdfContainer.querySelectorAll('h2').forEach(el => {
+                el.style.cssText = `font-family: ${headingFont}; font-size: 1.4em; font-weight: 600; margin: 1.5em 0 ${settings.paraSpacing}em 0; color: #222;`;
+            });
+            pdfContainer.querySelectorAll('h3').forEach(el => {
+                el.style.cssText = `font-family: ${headingFont}; font-size: 1.2em; font-weight: 600; margin: 1.2em 0 0.4em 0; color: #333;`;
+            });
+
+            // Style paragraphs
+            pdfContainer.querySelectorAll('p').forEach(el => {
+                el.style.cssText = `margin: 0 0 ${settings.paraSpacing}em 0;`;
+            });
+
+            // Code block styles based on setting
+            const codeStyles = {
+                light: { bg: '#f5f5f5', border: '1px solid #e0e0e0', color: '#333' },
+                dark: { bg: '#2d2d2d', border: 'none', color: '#f8f8f2' },
+                border: { bg: 'white', border: '1px solid #ccc', color: '#333' }
+            };
+            const codeStyle = codeStyles[settings.codeStyle];
+
+            pdfContainer.querySelectorAll('pre').forEach(el => {
+                el.style.cssText = `background: ${codeStyle.bg}; padding: 12px 16px; border-radius: 4px; margin: 0 0 ${settings.paraSpacing}em 0; border: ${codeStyle.border}; overflow: visible;`;
+            });
+            pdfContainer.querySelectorAll('pre code').forEach(el => {
+                el.style.cssText = `font-family: 'Courier New', monospace; font-size: 0.85em; color: ${codeStyle.color}; background: none; padding: 0; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;`;
+            });
+            pdfContainer.querySelectorAll('code').forEach(el => {
+                if (!el.parentElement.matches('pre')) {
+                    el.style.cssText = `font-family: 'Courier New', monospace; font-size: 0.9em; background: #f0f0f0; padding: 2px 5px; border-radius: 3px; color: #c7254e;`;
+                }
+            });
+
+            // Style tables
+            pdfContainer.querySelectorAll('table').forEach(el => {
+                el.style.cssText = `width: 100%; border-collapse: collapse; margin: 0 0 ${settings.paraSpacing}em 0;`;
+            });
+            pdfContainer.querySelectorAll('th, td').forEach(el => {
+                el.style.cssText = 'padding: 8px 12px; border: 1px solid #ccc; text-align: left;';
+            });
+            pdfContainer.querySelectorAll('th').forEach(el => {
+                el.style.cssText += 'background: #f5f5f5; font-weight: 600;';
+            });
+
+            // Style blockquotes
+            pdfContainer.querySelectorAll('blockquote').forEach(el => {
+                el.style.cssText = `margin: 0 0 ${settings.paraSpacing}em 0; padding: 10px 20px; border-left: 4px solid #666; background: #fafafa; font-style: italic; color: #555;`;
+            });
+
+            // Style lists
+            pdfContainer.querySelectorAll('ul, ol').forEach(el => {
+                el.style.cssText = `margin: 0 0 ${settings.paraSpacing}em 0; padding-left: 24px;`;
+            });
+            pdfContainer.querySelectorAll('li').forEach(el => {
+                el.style.cssText = 'margin: 4px 0;';
+            });
+
+            // Style links
+            pdfContainer.querySelectorAll('a').forEach(el => {
+                el.style.cssText = 'color: #0066cc; text-decoration: none;';
+            });
+
+            // Style horizontal rules
+            pdfContainer.querySelectorAll('hr').forEach(el => {
+                el.style.cssText = `margin: ${settings.paraSpacing}em 0; border: none; border-top: 1px solid #ccc;`;
+            });
+
+            // Configure html2pdf
+            const opt = {
+                margin: parseFloat(settings.margins),
+                filename: `${filename}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: settings.pageSize,
+                    orientation: 'portrait'
+                },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            // Generate PDF
+            html2pdf().set(opt).from(pdfContainer).save().then(() => {
+                closePdfDialog();
+            }).catch(err => {
+                console.error('PDF generation failed:', err);
+                alert('PDF generation failed. Please try again.');
+                document.getElementById('pdfStatus').classList.remove('visible');
+                document.getElementById('pdfActions').style.display = 'flex';
+            });
+        }
+
+        function adjustFontSize(delta) {
+            fontSize = Math.max(12, Math.min(24, fontSize + delta));
+            document.getElementById('fontSizeDisplay').textContent = `${fontSize}px`;
+            document.getElementById('mobileFontSizeDisplay').textContent = `${fontSize}px`;
+            preview.style.fontSize = `${fontSize}px`;
+            editor.style.fontSize = `${fontSize}px`;
+        }
+
+        function adjustLineHeight(delta) {
+            lineHeight = Math.max(1.2, Math.min(2.5, lineHeight + delta));
+            document.getElementById('lineHeightDisplay').textContent = lineHeight.toFixed(1);
+            document.getElementById('mobileLineHeightDisplay').textContent = lineHeight.toFixed(1);
+            preview.style.lineHeight = lineHeight;
+            editor.style.lineHeight = lineHeight;
+        }
+
+        function adjustMaxWidth(delta) {
+            maxWidth = Math.max(500, Math.min(1200, maxWidth + delta));
+            document.getElementById('maxWidthDisplay').textContent = `${maxWidth}px`;
+            document.getElementById('mobileMaxWidthDisplay').textContent = `${maxWidth}px`;
+            preview.style.maxWidth = `${maxWidth}px`;
+        }
+
+        // Mobile Settings Panel
+        function openSettingsPanel() {
+            document.getElementById('settingsPanelOverlay').classList.add('visible');
+            document.getElementById('settingsPanel').classList.add('visible');
+            // Sync mobile theme select with desktop
+            document.getElementById('mobileThemeSelect').value = document.getElementById('themeSelect').value;
+        }
+
+        function closeSettingsPanel() {
+            document.getElementById('settingsPanelOverlay').classList.remove('visible');
+            document.getElementById('settingsPanel').classList.remove('visible');
+        }
+
+        function changeTheme(themeValue) {
+            // Accept theme from parameter (mobile) or get from desktop select
+            const theme = themeValue || document.getElementById('themeSelect').value;
+            // Sync both selects
+            document.getElementById('themeSelect').value = theme;
+            document.getElementById('mobileThemeSelect').value = theme;
+            const root = document.documentElement;
+
+            switch(theme) {
+                case 'dark':
+                    root.style.setProperty('--bg-primary', '#1e1e1e');
+                    root.style.setProperty('--bg-secondary', '#252526');
+                    root.style.setProperty('--bg-tertiary', '#333333');
+                    root.style.setProperty('--text-primary', '#e0e0e0');
+                    root.style.setProperty('--text-secondary', '#888888');
+                    root.style.setProperty('--border-color', '#404040');
+                    root.style.setProperty('--code-bg', '#2d2d2d');
+                    root.style.setProperty('--accent-color', '#4a90d9');
+                    root.style.setProperty('--accent-hover', '#357abd');
+                    break;
+                case 'sepia':
+                    root.style.setProperty('--bg-primary', '#f4ecd8');
+                    root.style.setProperty('--bg-secondary', '#ebe3cf');
+                    root.style.setProperty('--bg-tertiary', '#ddd5c1');
+                    root.style.setProperty('--text-primary', '#5b4636');
+                    root.style.setProperty('--text-secondary', '#7a6651');
+                    root.style.setProperty('--border-color', '#c9bea8');
+                    root.style.setProperty('--code-bg', '#e8dfc8');
+                    root.style.setProperty('--accent-color', '#8b6914');
+                    root.style.setProperty('--accent-hover', '#6d5310');
+                    break;
+                case 'synthwave':
+                    root.style.setProperty('--bg-primary', '#1a1a2e');
+                    root.style.setProperty('--bg-secondary', '#16213e');
+                    root.style.setProperty('--bg-tertiary', '#1f2b47');
+                    root.style.setProperty('--text-primary', '#b8c5d6');
+                    root.style.setProperty('--text-secondary', '#6b7a8f');
+                    root.style.setProperty('--border-color', '#2a3a5a');
+                    root.style.setProperty('--code-bg', '#0f1629');
+                    root.style.setProperty('--accent-color', '#5c8a8a');
+                    root.style.setProperty('--accent-hover', '#4a7070');
+                    break;
+                case 'hal':
+                    // 2001: A Space Odyssey - clean whites, sterile, with HAL's red
+                    root.style.setProperty('--bg-primary', '#f8f8f8');
+                    root.style.setProperty('--bg-secondary', '#e8e8e8');
+                    root.style.setProperty('--bg-tertiary', '#d0d0d0');
+                    root.style.setProperty('--text-primary', '#1a1a1a');
+                    root.style.setProperty('--text-secondary', '#555555');
+                    root.style.setProperty('--border-color', '#c0c0c0');
+                    root.style.setProperty('--code-bg', '#2a2a2a');
+                    root.style.setProperty('--accent-color', '#c41e3a');
+                    root.style.setProperty('--accent-hover', '#a01830');
+                    break;
+                case 'moss':
+                    root.style.setProperty('--bg-primary', '#f5f7f4');
+                    root.style.setProperty('--bg-secondary', '#e8ede5');
+                    root.style.setProperty('--bg-tertiary', '#d4ddd0');
+                    root.style.setProperty('--text-primary', '#2d3a2d');
+                    root.style.setProperty('--text-secondary', '#5a6b5a');
+                    root.style.setProperty('--border-color', '#c1cdb9');
+                    root.style.setProperty('--code-bg', '#e0e8dc');
+                    root.style.setProperty('--accent-color', '#5a7a5a');
+                    root.style.setProperty('--accent-hover', '#486848');
+                    break;
+                default:
+                    root.style.setProperty('--bg-primary', '#ffffff');
+                    root.style.setProperty('--bg-secondary', '#f8f9fa');
+                    root.style.setProperty('--bg-tertiary', '#e9ecef');
+                    root.style.setProperty('--text-primary', '#212529');
+                    root.style.setProperty('--text-secondary', '#6c757d');
+                    root.style.setProperty('--border-color', '#dee2e6');
+                    root.style.setProperty('--code-bg', '#f4f4f4');
+                    root.style.setProperty('--accent-color', '#4a90d9');
+                    root.style.setProperty('--accent-hover', '#357abd');
+            }
+
+            localStorage.setItem('markdown-editor-theme', theme);
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('markdown-editor-content', editor.value);
+            localStorage.setItem('markdown-editor-docname', document.getElementById('docName').value);
+        }
+
+        function updateTabTitle() {
+            const docName = document.getElementById('docName').value || 'untitled';
+            document.title = `${docName} — Markdown Editor`;
+        }
+
+        function loadFromLocalStorage() {
+            const savedContent = localStorage.getItem('markdown-editor-content');
+            const savedDocName = localStorage.getItem('markdown-editor-docname');
+            const savedTheme = localStorage.getItem('markdown-editor-theme');
+
+            if (savedContent) {
+                editor.value = savedContent;
+                updatePreview();
+                updateStats();
+            }
+
+            if (savedDocName) {
+                document.getElementById('docName').value = savedDocName;
+            }
+
+            updateTabTitle();
+
+            if (savedTheme) {
+                document.getElementById('themeSelect').value = savedTheme;
+                changeTheme();
+            }
+        }
+
+        // Custom Template Save/Load Functions
+        function getSavedTemplates() {
+            const saved = localStorage.getItem('markdown-editor-pdf-templates');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveCustomTemplate() {
+            const name = prompt('Enter a name for this template:');
+            if (!name || !name.trim()) return;
+
+            const settings = {
+                fontFamily: document.getElementById('pdfFontFamily').value,
+                fontSize: document.getElementById('pdfFontSize').value,
+                lineHeight: document.getElementById('pdfLineHeight').value,
+                margins: document.getElementById('pdfMargins').value,
+                paraSpacing: document.getElementById('pdfParaSpacing').value,
+                codeStyle: document.getElementById('pdfCodeStyle').value,
+                pageSize: document.getElementById('pdfPageSize').value
+            };
+
+            const templates = getSavedTemplates();
+            templates[name.trim()] = settings;
+            localStorage.setItem('markdown-editor-pdf-templates', JSON.stringify(templates));
+
+            alert(`Template "${name.trim()}" saved!`);
+        }
+
+        function showLoadTemplates() {
+            const templates = getSavedTemplates();
+            const list = document.getElementById('templatesList');
+            const names = Object.keys(templates);
+
+            if (names.length === 0) {
+                list.innerHTML = '<div class="no-templates">No saved templates yet.<br><br>Use the "Save" button to save your current custom settings.</div>';
+            } else {
+                list.innerHTML = names.map(name => {
+                    const t = templates[name];
+                    const fontLabel = { sans: 'Sans-serif', serif: 'Serif', mono: 'Mono' }[t.fontFamily] || t.fontFamily;
+                    const preview = `${fontLabel}, ${t.fontSize}pt, ${t.lineHeight} height`;
+                    return `
+                        <div class="saved-template-item">
+                            <div class="saved-template-info" onclick="loadTemplate('${name.replace(/'/g, "\\'")}')">
+                                <div class="saved-template-name">${name}</div>
+                                <div class="saved-template-preview">${preview}</div>
+                            </div>
+                            <div class="saved-template-actions">
+                                <button onclick="loadTemplate('${name.replace(/'/g, "\\'")}')">Use</button>
+                                <button class="delete-btn" onclick="deleteTemplate('${name.replace(/'/g, "\\'")}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('templatesModal').classList.add('visible');
+        }
+
+        function hideLoadTemplates() {
+            document.getElementById('templatesModal').classList.remove('visible');
+        }
+
+        function loadTemplate(name) {
+            const templates = getSavedTemplates();
+            const t = templates[name];
+            if (!t) return;
+
+            document.getElementById('pdfPageSize').value = t.pageSize;
+            document.getElementById('pdfFontFamily').value = t.fontFamily;
+            document.getElementById('pdfFontSize').value = t.fontSize;
+            document.getElementById('pdfLineHeight').value = t.lineHeight;
+            document.getElementById('pdfMargins').value = t.margins;
+            document.getElementById('pdfParaSpacing').value = t.paraSpacing;
+            document.getElementById('pdfCodeStyle').value = t.codeStyle;
+
+            hideLoadTemplates();
+        }
+
+        function deleteTemplate(name) {
+            if (!confirm(`Delete template "${name}"?`)) return;
+
+            const templates = getSavedTemplates();
+            delete templates[name];
+            localStorage.setItem('markdown-editor-pdf-templates', JSON.stringify(templates));
+
+            showLoadTemplates(); // Refresh the list
+        }
+
+        // Dropdown functions
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const isOpen = dropdown.classList.contains('open');
+
+            // Close all dropdowns first
+            closeDropdowns();
+
+            // Toggle this one if it wasn't open
+            if (!isOpen) {
+                dropdown.classList.add('open');
+            }
+        }
+
+        function closeDropdowns() {
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown')) {
+                closeDropdowns();
+            }
+        });
+
+        // Set initial editor width
+        editorPanel.style.width = `${editorWidth}%`;
+
+        // Handle mobile: default to Read mode on small screens
+        function handleMobileMode() {
+            if (window.innerWidth <= 768) {
+                if (currentMode === 'split') {
+                    setMode('read');
+                }
+            }
+        }
+
+        // Check on load and resize
+        handleMobileMode();
+        window.addEventListener('resize', handleMobileMode);
+
+        // Set initial active state for mode buttons
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === currentMode);
+        });
+    </script>
+
+
+</body></html>
